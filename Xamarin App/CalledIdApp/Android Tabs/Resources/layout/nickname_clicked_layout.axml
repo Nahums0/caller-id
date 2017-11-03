@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+  <View
+        android:background="#B32C2E"
+        android:layout_height="@dimen/topbar_size"
+        android:layout_width="match_parent" />
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:background="#B32C2E"
+    >
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_width="60dp"
+      android:id="@+id/btnBackButton"
+      android:layout_height="match_parent">
+      <ImageView
+        android:layout_height="28dp"
+        android:layout_width="28dp"
+        android:layout_marginLeft="7dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/backarrow_white"/>
+    </LinearLayout>
+  </LinearLayout>
+  <TextView
+    android:id="@+id/tvCalledBy"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="#FFFFFF"
+    android:text="Called Nahum By :"
+    android:textAlignment="center"
+    android:gravity="center" 
+    android:textColor="#B32C2E"
+    android:textSize="22dp"
+    android:textStyle="bold"
+    />
+  <ListView
+    android:layout_marginTop="20dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    android:id="@+id/lvNicknameInfoListView"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:divider="@android:color/transparent"
+    android:dividerHeight="10.0sp">
+
+  </ListView>
+</LinearLayout>
