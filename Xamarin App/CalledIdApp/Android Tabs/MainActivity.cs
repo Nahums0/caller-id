@@ -12,13 +12,14 @@ namespace Called_Id
     {
         public static List<Nickname> NicknamesList;
 
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.Main);
 
             FragmentTransaction transaction = FragmentManager.BeginTransaction();
-            SlidingTabsFragment fragment = new SlidingTabsFragment();
+            SlidingTabsFragment fragment = new SlidingTabsFragment(Intent);
             transaction.Replace(Resource.Id.sample_content_fragment, fragment);
             transaction.Commit();
         }

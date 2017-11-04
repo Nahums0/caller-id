@@ -21,7 +21,10 @@ namespace Called_Id
     {
         private SlidingTabScrollView mSlidingTabScrollView;
         private ViewPager mViewPager;
+        private Intent intent;
 
+        public SlidingTabsFragment(Intent i) { intent = i; }
+       
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             // Use this to return your custom view for this Fragment
@@ -32,7 +35,7 @@ namespace Called_Id
         {
             mSlidingTabScrollView = view.FindViewById<SlidingTabScrollView>(Resource.Id.sliding_tabs);
             mViewPager = view.FindViewById<ViewPager>(Resource.Id.viewpager);
-            mViewPager.Adapter = new SamplePagerAdapter();
+            mViewPager.Adapter = new SamplePagerAdapter(intent);
 
             mSlidingTabScrollView.ViewPager = mViewPager;
         }
@@ -43,9 +46,11 @@ namespace Called_Id
     {
         List<string> Tabs = new List<string>();
         Context context;
+        Intent intent;
 
-        public SamplePagerAdapter()
+        public SamplePagerAdapter(Intent i)
         {
+            intent = i;
             Tabs.Add("Names");
             Tabs.Add("Search");
             Tabs.Add("About");
@@ -85,6 +90,9 @@ namespace Called_Id
             };
             NicknamesAdapter adapter = new NicknamesAdapter((Activity)context, MainActivity.NicknamesList);
             lview.ItemClick += Lview_ItemClick;
+
+            string PhoneNumber= intent.GetStringExtra("PhoneNumber");
+            cnumber.Text = "Names For :  " + PhoneNumber.Substring(0,3) + " - " + PhoneNumber.Substring(3);
             lview.Adapter = adapter;
             switch (position)
             {
