@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using Android.Provider;
 using Xamarin.Contacts;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Called_Id
 {
@@ -34,52 +35,26 @@ namespace Called_Id
     }
     public static class AppConsts
     {
-        public static string RestBaseUrl = "http://localhost:55011";
+         public const string RestBaseUrl = "http://localhost:55011";
     }
-    [Activity(Label = "LoginPage", MainLauncher = true)]
-    public class LoginPage : Activity
+    public static class RestQueries
     {
-        Button btnLogin;
-        Button btnRegister;
-        EditText etPhoneNumber;
-        Handler handler;
-
-        //UI Events
-        public void BtnLogin_Click(object sender, EventArgs e)
+        ///<summary>
+        ///<para>Posts a new user to the server</para>
+        ///<para>Uses context the get user's contacts and a user entered phone number</para>
+        ///</summary>
+        public static async Task<string> PostUser(Context context, string Phonenumber)
         {
-            var Logged = Authenticate(etPhoneNumber.Text);
-            if (Logged.Logged)
-            {
-                SaveCurrentUser(etPhoneNumber.Text,Logged.Data);
-                ProceedToMainActivity(etPhoneNumber.Text,Logged.Data);
-            }
-            else
-            {
-                Toast.MakeText(this, "Unrecgnized User", ToastLength.Short);
-                etPhoneNumber.Text = "";
-            }
-        }
-        public async void BtnRegister_Click(object sender, EventArgs e)
-        {
-            //TODO: Add sms auth
-            string Phonenumber = etPhoneNumber.Text;
-            if (Phonenumber=="")
-            {
-                Toast.MakeText(this, "Enter A Phone Number", ToastLength.Short);
-                return;
-            }
-            var client = new RestClient(AppConsts.RestBaseUrl+"/api/Ids/");
+            var client = new RestClient(AppConsts.RestBaseUrl + "/api/Ids/");
             var request = new RestRequest(Method.POST);
 
-            var book = new AddressBook(this);
-            //         new AddressBook (this); on Android
+            var book = new AddressBook(context);
             if (!await book.RequestPermission())
             {
-                Toast.MakeText(this, "Please allow access to your contacts", ToastLength.Long);
-                return;
+                return "-1";
             }
             string query = Phonenumber + "_";
-            string numbers_query="_";
+            string numbers_query = "_";
             string names_query = "";
 
             foreach (var item in book)
@@ -90,8 +65,8 @@ namespace Called_Id
                     {
                         if (phone.Number != null && phone.Number != "")
                         {
-                            names_query += item.DisplayName+",";
-                            numbers_query += phone.Number+",";
+                            names_query += item.DisplayName + ",";
+                            numbers_query += phone.Number + ",";
                             break;
                         }
                     }
@@ -101,20 +76,107 @@ namespace Called_Id
             numbers_query.Remove(numbers_query.Length - 2);
             query += names_query + numbers_query;
 
-            Toast.MakeText(this, query, ToastLength.Long).Show();
-
             IRestResponse response = client.Execute(request);
             var content = response.Content;
-            var responsedata = Authenticate(Phonenumber);
+            return content;
+        }
+        /// <summary>
+        /// <para>Recives a phone number and uthenticates the user</para>
+        /// </summary>
+        /// <param name="phoneNumber">User's phone number</param>
+        /// <returns>Return a tuple -> Logged will determine if user logged in successfully and Data will contaion the query result</returns>
+        public static (bool Logged, string Data) Authenticate(string phoneNumber)
+        {
+            try
+            {
+                var client = new RestClient(AppConsts.RestBaseUrl + "/api/Ids/" + phoneNumber);
+                var request = new RestRequest(Method.GET);
+                IRestResponse response = client.Execute(request);
+                var content = response.Content;
+                if (content == "null")
+                    return (false, null);
+                JsonClass.RootObject Result = JsonConvert.DeserializeObject<JsonClass.RootObject>(content);
+                if (Result.Number == phoneNumber)
+                    return (true, content);
+            }
+            catch
+            {
+                return (false, null);
+            }
+            return (false, null);
+        }
+        /// <summary>
+        /// <para>Delete the user which phone number is the same as the parameter</para>
+        /// </summary>
+        /// <param name="phonenumber"></param>
+        /// <returns></returns>
+        public static bool DeleteUser(string phonenumber)
+        {
+            try
+            {
+                var client = new RestClient(AppConsts.RestBaseUrl + "api/ids" + phonenumber);
+                var request = new RestRequest(Method.DELETE);
+                client.Execute(request);
+                return true;
+            }
+            catch 
+            {
+                return false;
+            }
+        }
+    }
+
+
+    [Activity(Label = "LoginPage", MainLauncher = true)]
+    public class LoginPage : Activity
+    {
+        Button btnLogin;
+        Button btnRegister;
+        EditText etPhoneNumber;
+
+        //UI Events
+        public void BtnLogin_Click(object sender, EventArgs e)
+        {
+            var Logged = RestQueries.Authenticate(etPhoneNumber.Text);
+            if (Logged.Logged)
+            {
+                SaveCurrentUser(etPhoneNumber.Text, Logged.Data);
+                ProceedToMainActivity(etPhoneNumber.Text, Logged.Data);
+            }
+            else
+            {
+                Toast.MakeText(this, "Unrecgnized User", ToastLength.Short);
+                etPhoneNumber.Text = "";
+            }
+        }                 // Login button handler
+        public async void BtnRegister_Click(object sender, EventArgs e)
+        {
+            //TODO: Add sms auth
+
+            string Phonenumber = etPhoneNumber.Text;
+            if (Phonenumber == "" || !ValidateNumber(Phonenumber))
+            {
+                Toast.MakeText(this, "Enter A Valid International Number", ToastLength.Short);
+                return;
+            }
+
+            var content = await RestQueries.PostUser(this, Phonenumber);
+            if (content == "-1")
+            {
+                Toast.MakeText(this, "Please allow access to your contacts", ToastLength.Long);
+                return;
+            }
+
+            var responsedata = RestQueries.Authenticate(Phonenumber);
             if (responsedata.Logged)
             {
                 ProceedToMainActivity(Phonenumber, responsedata.Data);
             }
             else
                 Toast.MakeText(this, "An Error Has Accured Please Try Again Later", ToastLength.Long);
-        }
+        }        // Register button handler
 
-        private void ProceedToMainActivity(string PhoneNumber,string userdata)
+        private void ProceedToMainActivity(string PhoneNumber, string userdata)
         {
             Intent i = new Intent(this, typeof(MainActivity));
             i.PutExtra("PhoneNumber", PhoneNumber);
@@ -122,7 +184,7 @@ namespace Called_Id
             i.SetFlags(i.Flags | ActivityFlags.NoHistory);
             StartActivity(i);
             Finish();
-        }   
+        }// Starts the main activity with user's phone number and user data (no history)
 
         private void SetupViews() // Asigns layout views to variables  
         {
@@ -143,7 +205,7 @@ namespace Called_Id
 
             btnLogin.Click += BtnLogin_Click;
             btnRegister.Click += BtnRegister_Click;
-           
+
         }
 
         private void CheckForLoggedUser()
@@ -157,28 +219,7 @@ namespace Called_Id
             {
                 ProceedToMainActivity(Number, Data);
             }
-        }
-
-        private (bool Logged,string Data) Authenticate(string phoneNumber)
-        {
-            try
-            {
-                var client = new RestClient(AppConsts.RestBaseUrl+"/api/Ids/" + phoneNumber);
-                var request = new RestRequest(Method.GET);
-                IRestResponse response = client.Execute(request);
-                var content = response.Content;
-                if (content == "null")
-                    return (false,null);
-                JsonClass.RootObject Result = JsonConvert.DeserializeObject<JsonClass.RootObject>(content);
-                if (Result.Number == phoneNumber)
-                    return (true,content);
-            }
-            catch
-            {
-                return (false,null);
-            }
-            return (false, null);
-        }
+        }                                      // Check if a user is already logged in
 
         private void SaveCurrentUser(string Number, string UserData)
         {
@@ -187,7 +228,30 @@ namespace Called_Id
             editor.PutString("PhoneNumber", Number);
             editor.PutString("UserData", UserData);
             editor.Apply();
-        }
+        }           // Saves current user's data into a preference
+        public bool ValidateNumber(string Number)
+        {
+            try
+            {
+                Number = Number.Replace(" ", "");
+                if (Number[0] == '+')
+                {
+                    for (int i = 1; i < Number.Length; i++)
+                    {
+                        if (!char.IsDigit(Number[i]))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }                              // Validates a if a number is real
 
     }
 }
