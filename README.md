@@ -1,4 +1,4 @@
-A Called Id Application using :
+A Caller Id Application using :
 
 -ASP.Net MVC 4 for the API
--Xamarin for the mobile app
+-Xamarin for the mobile app 
