@@ -29,10 +29,22 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:singleLine="true"
-        android:hint="Your International Number"
         android:layout_gravity="center"
         android:textColor="#FFFFFF"
         android:backgroundTint="#FFFFFF" />
+    <RelativeLayout
+          android:id="@+id/LoginPageloadingPanel"
+          android:visibility="gone"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:gravity="center">
+      <ProgressBar
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:backgroundTint="#FFFFFF"
+          android:id="@+id/LoginPageSpinner"
+          android:indeterminate="true" />
+    </RelativeLayout>
     <RelativeLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent">

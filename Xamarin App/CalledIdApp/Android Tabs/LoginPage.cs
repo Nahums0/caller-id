@@ -13,12 +13,33 @@ using Android.Provider;
 using Xamarin.Contacts;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Called_Id
 {
     //TODO: update contacts on login
     public class JsonClass
     {
+        public class JsonList
+        {
+            public class Nickname
+            {
+                public string m_Item1 { get; set; }
+                public string m_Item2 { get; set; }
+            }
+
+            public class List
+            {
+                public int Id { get; set; }
+                public string Number { get; set; }
+                public List<Nickname> Nicknames { get; set; }
+            }
+
+            public class RootObject
+            {
+                public List<List> List { get; set; }
+            }
+        }
         public class Nickname
         {
             public string m_Item1 { get; set; }
@@ -35,7 +56,7 @@ namespace Called_Id
     }
     public static class AppConsts
     {
-         public const string RestBaseUrl = "http://localhost:55011";
+         public const string RestBaseUrl = "https://nahum.localtunnel.me/";
     }
     public static class RestQueries
     {
@@ -89,8 +110,8 @@ namespace Called_Id
         {
             try
             {
-                var client = new RestClient(AppConsts.RestBaseUrl + "/api/Ids/" + phoneNumber);
-                var request = new RestRequest(Method.GET);
+                var client = new RestClient(AppConsts.RestBaseUrl);
+                var request = new RestRequest("/api/Ids/"+phoneNumber,Method.GET);
                 IRestResponse response = client.Execute(request);
                 var content = response.Content;
                 if (content == "null")
@@ -137,17 +158,32 @@ namespace Called_Id
         //UI Events
         public void BtnLogin_Click(object sender, EventArgs e)
         {
-            var Logged = RestQueries.Authenticate(etPhoneNumber.Text);
-            if (Logged.Logged)
+            string PhoneNumber = etPhoneNumber.Text;
+            var LoadPanel=FindViewById(Resource.Id.LoginPageloadingPanel);
+            LoadPanel.Visibility = Android.Views.ViewStates.Visible;
+            FindViewById<ProgressBar>(Resource.Id.LoginPageSpinner).IndeterminateDrawable.SetColorFilter(new Android.Graphics.Color(255,255,255),Android.Graphics.PorterDuff.Mode.Multiply);
+            new Thread(() => 
             {
-                SaveCurrentUser(etPhoneNumber.Text, Logged.Data);
-                ProceedToMainActivity(etPhoneNumber.Text, Logged.Data);
-            }
-            else
-            {
-                Toast.MakeText(this, "Unrecgnized User", ToastLength.Short);
-                etPhoneNumber.Text = "";
-            }
+                var Logged = RestQueries.Authenticate(PhoneNumber);
+                if (Logged.Logged)
+                {
+                    SaveCurrentUser(PhoneNumber, Logged.Data);
+                    RunOnUiThread(() =>
+                    {
+                        ProceedToMainActivity(PhoneNumber, Logged.Data);
+                    });
+                }
+                else
+                {
+                    RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(this, "Unrecgnized User", ToastLength.Short).Show();
+                        LoadPanel.Visibility = Android.Views.ViewStates.Gone;
+                        etPhoneNumber.Text = "";
+                    });
+                }
+            }).Start();
+            
         }                 // Login button handler
         public async void BtnRegister_Click(object sender, EventArgs e)
         {
@@ -181,7 +217,7 @@ namespace Called_Id
             Intent i = new Intent(this, typeof(MainActivity));
             i.PutExtra("PhoneNumber", PhoneNumber);
             i.PutExtra("userdata", userdata);
-            i.SetFlags(i.Flags | ActivityFlags.NoHistory);
+            //i.SetFlags(i.Flags | ActivityFlags.NoHistory);
             StartActivity(i);
             Finish();
         }// Starts the main activity with user's phone number and user data (no history)

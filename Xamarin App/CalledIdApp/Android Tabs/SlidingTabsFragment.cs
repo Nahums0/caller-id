@@ -14,6 +14,7 @@ using Android.Support.V4.View;
 using Java.Lang;
 using Android.Views.InputMethods;
 using Android_Tabs;
+using Newtonsoft.Json;
 
 namespace Called_Id
 {
@@ -22,6 +23,7 @@ namespace Called_Id
         private SlidingTabScrollView mSlidingTabScrollView;
         private ViewPager mViewPager;
         private Intent intent;
+
 
         public SlidingTabsFragment(Intent i) { intent = i; }
        
@@ -47,6 +49,8 @@ namespace Called_Id
         List<string> Tabs = new List<string>();
         Context context;
         Intent intent;
+        JsonClass.RootObject UserDataObject;
+
 
         public SamplePagerAdapter(Intent i)
         {
@@ -82,18 +86,14 @@ namespace Called_Id
 
             sview.SetQueryHint("Search A Specific Phone Number");
 
-            MainActivity.NicknamesList = new List<Nickname>()
-            {
-                new Nickname{Name="Nahum",Count=12},
-                new Nickname{Name="Omer",Count=7},
-                new Nickname{Name="Moshe",Count=5}
-            };
-            NicknamesAdapter adapter = new NicknamesAdapter((Activity)context, MainActivity.NicknamesList);
+            NicknamesAdapter adapter = GetNicknamesList();
+            lview.Adapter = adapter;
+
             lview.ItemClick += Lview_ItemClick;
 
-            string PhoneNumber= intent.GetStringExtra("PhoneNumber");
-            cnumber.Text = "Names For :  " + PhoneNumber.Substring(0,3) + " - " + PhoneNumber.Substring(3);
-            lview.Adapter = adapter;
+            string PhoneNumber = intent.GetStringExtra("PhoneNumber");
+            cnumber.Text = "Names For :  " + PhoneNumber.Substring(0, 3) + " - " + PhoneNumber.Substring(3);
+
             switch (position)
             {
                 case 0:
@@ -119,6 +119,45 @@ namespace Called_Id
             return view;
         }
 
+
+        private int NicknamesListContains(List<Nickname>list,JsonClass.Nickname obj)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i].Name==obj.m_Item1)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        private NicknamesAdapter GetNicknamesList()
+        {
+            string UserData=intent.GetStringExtra("userdata");
+            UserDataObject = JsonConvert.DeserializeObject<JsonClass.RootObject>(UserData);
+            var List = new List<Nickname>();
+
+            foreach (var item in UserDataObject.Nicknames)
+            {
+                var c = 5;
+            }
+
+            for (int i = 0; i < UserDataObject.Nicknames.Count; i++)
+            {
+                int result = NicknamesListContains(List, UserDataObject.Nicknames[i]);
+                if (result != -1)
+                {
+                    List[result].Count++;
+                }
+                else
+                    List.Add(new Nickname { Name = UserDataObject.Nicknames[i].m_Item1, Count = 1 });
+            }
+            MainActivity.NicknamesList = List;
+            NicknamesAdapter adapter = new NicknamesAdapter((Activity)context, MainActivity.NicknamesList);
+            return adapter;
+        }
+
+
         private void Lview_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
             var item = ((ListView)e.Parent).GetChildAt(e.Position);
@@ -126,7 +165,23 @@ namespace Called_Id
 
             var ClickedItem = MainActivity.NicknamesList[e.Position];
             var activity2 = new Intent(context, typeof(Nickname_Clicked));
+
             activity2.PutExtra("name", ClickedItem.Name);
+
+            List<string> CalledByList = new List<string>();
+            foreach (var item2 in UserDataObject.Nicknames)
+            {
+                var item2item1 = item2.m_Item1;
+                var item2item2 = item2.m_Item2;
+                var b = ClickedItem.Name;
+                if (item2item1==ClickedItem.Name)
+                {
+                    CalledByList.Add(item2item2);
+                }
+            }
+            activity2.PutStringArrayListExtra("calledby", CalledByList);
+            //activity2.SetFlags(activity2.Flags | ActivityFlags.);
+
             context.StartActivity(activity2);
         }
 
