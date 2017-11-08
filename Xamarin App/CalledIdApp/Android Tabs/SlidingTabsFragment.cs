@@ -50,6 +50,8 @@ namespace Called_Id
         Context context;
         Intent intent;
         JsonClass.RootObject UserDataObject;
+        private ListView lview;
+        private bool FirstOpen = true;
 
 
         public SamplePagerAdapter(Intent i)
@@ -79,18 +81,23 @@ namespace Called_Id
             container.AddView(view);
 
             TextView tv = view.FindViewById<TextView>(Resource.Id.item_title);
-            var lview = view.FindViewById<ListView>(Resource.Id.listview);
+            lview = view.FindViewById<ListView>(Resource.Id.listview);
             var sview = view.FindViewById<SearchView>(Resource.Id.searchview);
             var cnumber = view.FindViewById<TextView>(Resource.Id.tvCurrentNumber);
+            var swiperefreshview = view.FindViewById<Android.Support.V4.Widget.SwipeRefreshLayout>(Resource.Id.swiperefresh);
 
+            if (FirstOpen)
+            {
+                swiperefreshview.Refresh += Swiperefreshview_Refresh;
+                swiperefreshview.Refreshing = true;
+                Swiperefreshview_Refresh(swiperefreshview, null);
+                FirstOpen = false;
+            }
 
             sview.SetQueryHint("Search A Specific Phone Number");
-
-            NicknamesAdapter adapter = GetNicknamesList();
+            NicknamesAdapter adapter = GetNicknamesList(intent.GetStringExtra("userdata"));
             lview.Adapter = adapter;
-
             lview.ItemClick += Lview_ItemClick;
-
             string PhoneNumber = intent.GetStringExtra("PhoneNumber");
             cnumber.Text = "Names For :  " + PhoneNumber.Substring(0, 3) + " - " + PhoneNumber.Substring(3);
 
@@ -98,18 +105,21 @@ namespace Called_Id
             {
                 case 0:
                     lview.Visibility = ViewStates.Visible;
+                    swiperefreshview.Visibility = ViewStates.Visible;
                     cnumber.Visibility = ViewStates.Visible;
                     sview.Visibility = ViewStates.Invisible;
 
                     break;
                 case 1:
                     lview.Visibility = ViewStates.Gone;
+                    swiperefreshview.Visibility = ViewStates.Gone;
                     cnumber.Visibility = ViewStates.Gone;
                     sview.Visibility = ViewStates.Visible;
                     break;
                 case 2:
                     lview.Visibility = ViewStates.Gone;
                     cnumber.Visibility = ViewStates.Gone;
+                    swiperefreshview.Visibility = ViewStates.Gone;
                     sview.Visibility = ViewStates.Gone;
                     tv.Text = "This Is The About Fragment";
                     break;
@@ -119,6 +129,43 @@ namespace Called_Id
             return view;
         }
 
+        private void Swiperefreshview_Refresh(object sender, EventArgs e)
+        {
+            var swiperefresher = (Android.Support.V4.Widget.SwipeRefreshLayout)sender;
+            new Thread(() =>
+            {
+                var tuple = RestQueries.Authenticate(intent.GetStringExtra("PhoneNumber"));
+
+                if (tuple.Logged)
+                {
+                    if (tuple.Data != "" && tuple.Data != null)
+                    {
+                        var adapter = GetNicknamesList(tuple.Data);
+                        ((Activity)context).RunOnUiThread(() =>
+                        {
+                            lview.Adapter = adapter;
+                            swiperefresher.Refreshing = false;
+                        });
+                    }
+                    else
+                    {
+                        ((Activity)context).RunOnUiThread(() =>
+                        {
+                            swiperefresher.Refreshing = false;
+                            Toast.MakeText(context, "No Connection", ToastLength.Short).Show();
+                        });
+                    }
+                }
+                else
+                {
+                    ((Activity)context).RunOnUiThread(() =>
+                    {
+                        swiperefresher.Refreshing = false;
+                        Toast.MakeText(context, "No Connection", ToastLength.Short).Show();
+                    });
+                }
+            }).Start();
+        }
 
         private int NicknamesListContains(List<Nickname>list,JsonClass.Nickname obj)
         {
@@ -131,9 +178,9 @@ namespace Called_Id
             }
             return -1;
         }
-        private NicknamesAdapter GetNicknamesList()
+        private NicknamesAdapter GetNicknamesList(string userdata)
         {
-            string UserData=intent.GetStringExtra("userdata");
+            string UserData = userdata;
             UserDataObject = JsonConvert.DeserializeObject<JsonClass.RootObject>(UserData);
             var List = new List<Nickname>();
 

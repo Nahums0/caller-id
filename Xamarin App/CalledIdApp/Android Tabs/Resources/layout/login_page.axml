@@ -25,6 +25,8 @@
     <EditText
         android:id="@+id/etLoginPagePhoneNumber"
         android:layout_width="match_parent"
+        android:inputType="number"
+        android:digits="0123456789"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -33,17 +35,17 @@
         android:textColor="#FFFFFF"
         android:backgroundTint="#FFFFFF" />
     <RelativeLayout
-          android:id="@+id/LoginPageloadingPanel"
-          android:visibility="gone"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:gravity="center">
-      <ProgressBar
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:backgroundTint="#FFFFFF"
-          android:id="@+id/LoginPageSpinner"
-          android:indeterminate="true" />
+        android:id="@+id/LoginPageloadingPanel"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFFF"
+            android:id="@+id/LoginPageSpinner"
+            android:indeterminate="true" />
     </RelativeLayout>
     <RelativeLayout
         android:layout_height="match_parent"

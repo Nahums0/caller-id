@@ -148,7 +148,7 @@ namespace Called_Id
     }
 
 
-    [Activity(Label = "LoginPage", MainLauncher = true)]
+    [Activity(Label = "Caller ID", MainLauncher = true)]
     public class LoginPage : Activity
     {
         Button btnLogin;
@@ -159,9 +159,13 @@ namespace Called_Id
         public void BtnLogin_Click(object sender, EventArgs e)
         {
             string PhoneNumber = etPhoneNumber.Text;
+
+            //Progress bar code
             var LoadPanel=FindViewById(Resource.Id.LoginPageloadingPanel);
             LoadPanel.Visibility = Android.Views.ViewStates.Visible;
             FindViewById<ProgressBar>(Resource.Id.LoginPageSpinner).IndeterminateDrawable.SetColorFilter(new Android.Graphics.Color(255,255,255),Android.Graphics.PorterDuff.Mode.Multiply);
+
+
             new Thread(() => 
             {
                 var Logged = RestQueries.Authenticate(PhoneNumber);

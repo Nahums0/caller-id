@@ -2444,8 +2444,8 @@ namespace Android_Tabs
 			// aapt resource value: 0x7f0700a3
 			public const int info = 2131165347;
 			
-			// aapt resource value: 0x7f0700b0
-			public const int item_title = 2131165360;
+			// aapt resource value: 0x7f0700b1
+			public const int item_title = 2131165361;
 			
 			// aapt resource value: 0x7f070000
 			public const int item_touch_helper_previous_elevation = 2131165184;
@@ -2468,8 +2468,8 @@ namespace Android_Tabs
 			// aapt resource value: 0x7f070048
 			public const int list_item = 2131165256;
 			
-			// aapt resource value: 0x7f0700ae
-			public const int listview = 2131165358;
+			// aapt resource value: 0x7f0700af
+			public const int listview = 2131165359;
 			
 			// aapt resource value: 0x7f070092
 			public const int loadingPanel = 2131165330;
@@ -2477,8 +2477,8 @@ namespace Android_Tabs
 			// aapt resource value: 0x7f070095
 			public const int lvNicknameInfoListView = 2131165333;
 			
-			// aapt resource value: 0x7f0700b2
-			public const int masked = 2131165362;
+			// aapt resource value: 0x7f0700b3
+			public const int masked = 2131165363;
 			
 			// aapt resource value: 0x7f07009c
 			public const int media_actions = 2131165340;
@@ -2600,8 +2600,8 @@ namespace Android_Tabs
 			// aapt resource value: 0x7f070071
 			public const int search_voice_btn = 2131165297;
 			
-			// aapt resource value: 0x7f0700af
-			public const int searchview = 2131165359;
+			// aapt resource value: 0x7f0700b0
+			public const int searchview = 2131165360;
 			
 			// aapt resource value: 0x7f070072
 			public const int select_dialog_listview = 2131165298;
@@ -2659,6 +2659,9 @@ namespace Android_Tabs
 			
 			// aapt resource value: 0x7f07006f
 			public const int submit_area = 2131165295;
+			
+			// aapt resource value: 0x7f0700ae
+			public const int swiperefresh = 2131165358;
 			
 			// aapt resource value: 0x7f070011
 			public const int tabMode = 2131165201;
@@ -2744,8 +2747,8 @@ namespace Android_Tabs
 			// aapt resource value: 0x7f070082
 			public const int viewpager = 2131165314;
 			
-			// aapt resource value: 0x7f0700b1
-			public const int visible = 2131165361;
+			// aapt resource value: 0x7f0700b2
+			public const int visible = 2131165362;
 			
 			// aapt resource value: 0x7f070027
 			public const int withText = 2131165223;

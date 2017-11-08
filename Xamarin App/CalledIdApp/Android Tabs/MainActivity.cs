@@ -4,6 +4,8 @@ using Android.OS;
 using Android.Views;
 using System.Collections.Generic;
 using Android_Tabs;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Called_Id
 {
@@ -12,12 +14,19 @@ namespace Called_Id
     {
         public static List<Nickname> NicknamesList;
 
+        private async void PostUser()
+        {
+            await RestQueries.PostUser(this, Intent.GetStringExtra("PhoneNumber"));
+        }
 
-        protected override void OnCreate(Bundle savedInstanceState)
+
+        protected async override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.Main);
 
+            new Thread(PostUser).Start();
+        
             FragmentTransaction transaction = FragmentManager.BeginTransaction();
             SlidingTabsFragment fragment = new SlidingTabsFragment(Intent);
             transaction.Replace(Resource.Id.sample_content_fragment, fragment);
