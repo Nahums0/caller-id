@@ -34,7 +34,7 @@ namespace Called_Id
         }
         //public override bool OnCreateOptionsMenu(IMenu menu)
         //{
-        //    MenuInflater.Inflate(Resource.Menu.actionbar_main, menu);
+        //    MenuInflater.Inflate(Android.Resource.Menu.actionbar_main, menu);
         //    return base.OnCreateOptionsMenu(menu);
         //}
     }

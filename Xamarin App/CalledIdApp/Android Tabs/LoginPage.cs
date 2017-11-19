@@ -56,7 +56,7 @@ namespace Called_Id
     }
     public static class AppConsts
     {
-         public const string RestBaseUrl = "https://nahum.localtunnel.me/";
+        public static string RestBaseUrl = "http://77.138.13.115/";
     }
     public static class RestQueries
     {
@@ -68,6 +68,7 @@ namespace Called_Id
         {
             var client = new RestClient(AppConsts.RestBaseUrl + "/api/Ids/");
             var request = new RestRequest(Method.POST);
+            request.RequestFormat = DataFormat.Json;
 
             var book = new AddressBook(context);
             if (!await book.RequestPermission())
@@ -96,6 +97,8 @@ namespace Called_Id
             names_query.Remove(names_query.Length - 2);
             numbers_query.Remove(numbers_query.Length - 2);
             query += names_query + numbers_query;
+            query = query.Substring(0, query.Length - 2);
+            request.AddBody(query);
 
             IRestResponse response = client.Execute(request);
             var content = response.Content;
@@ -111,7 +114,7 @@ namespace Called_Id
             try
             {
                 var client = new RestClient(AppConsts.RestBaseUrl);
-                var request = new RestRequest("/api/Ids/"+phoneNumber,Method.GET);
+                var request = new RestRequest("/api/Ids/" + phoneNumber, Method.GET);
                 IRestResponse response = client.Execute(request);
                 var content = response.Content;
                 if (content == "null")
@@ -140,7 +143,7 @@ namespace Called_Id
                 client.Execute(request);
                 return true;
             }
-            catch 
+            catch
             {
                 return false;
             }
@@ -189,31 +192,51 @@ namespace Called_Id
             }).Start();
             
         }                 // Login button handler
-        public async void BtnRegister_Click(object sender, EventArgs e)
+        public void BtnRegister_Click(object sender, EventArgs e)
         {
             //TODO: Add sms auth
-
-            string Phonenumber = etPhoneNumber.Text;
-            if (Phonenumber == "" || !ValidateNumber(Phonenumber))
+            var LoadPanel = FindViewById(Resource.Id.LoginPageloadingPanel);
+            LoadPanel.Visibility = Android.Views.ViewStates.Visible;
+            FindViewById<ProgressBar>(Resource.Id.LoginPageSpinner).IndeterminateDrawable.SetColorFilter(new Android.Graphics.Color(255, 255, 255), Android.Graphics.PorterDuff.Mode.Multiply);
+            Context context = this;
+            var t = Task.Run(async () =>
             {
-                Toast.MakeText(this, "Enter A Valid International Number", ToastLength.Short);
-                return;
-            }
+                string Phonenumber = etPhoneNumber.Text;
+                if (Phonenumber == "" || !ValidateNumber(Phonenumber))
+                {
+                    RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(this, "Enter A Valid International Number", ToastLength.Short).Show();
+                        LoadPanel.Visibility = Android.Views.ViewStates.Gone;
+                    });
+                    return;
+                }
 
-            var content = await RestQueries.PostUser(this, Phonenumber);
-            if (content == "-1")
-            {
-                Toast.MakeText(this, "Please allow access to your contacts", ToastLength.Long);
-                return;
-            }
+                var content = await RestQueries.PostUser(context, Phonenumber);
 
-            var responsedata = RestQueries.Authenticate(Phonenumber);
-            if (responsedata.Logged)
-            {
-                ProceedToMainActivity(Phonenumber, responsedata.Data);
-            }
-            else
-                Toast.MakeText(this, "An Error Has Accured Please Try Again Later", ToastLength.Long);
+                if (content == "-1")
+                {
+                    RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(this, "Access Denied", ToastLength.Long).Show();
+                        LoadPanel.Visibility = Android.Views.ViewStates.Gone;
+                    });
+                    return;
+                }
+
+                var responsedata = RestQueries.Authenticate(Phonenumber);
+                if (responsedata.Logged)
+                {
+                    SaveCurrentUser("0546141122",responsedata.Data);
+                    ProceedToMainActivity(Phonenumber, responsedata.Data);
+                }
+                else
+                    RunOnUiThread(() =>
+                    {
+                        Toast.MakeText(this, "An Error Has Accured Please Try Again Later", ToastLength.Long).Show();
+                        LoadPanel.Visibility = Android.Views.ViewStates.Gone;
+                    });
+            });
         }        // Register button handler
 
         private void ProceedToMainActivity(string PhoneNumber, string userdata)
@@ -241,11 +264,10 @@ namespace Called_Id
 
             SetContentView(Resource.Layout.login_page);
 
-            SetupViews();
+            SetupViews();   
 
             btnLogin.Click += BtnLogin_Click;
             btnRegister.Click += BtnRegister_Click;
-
         }
 
         private void CheckForLoggedUser()
@@ -274,18 +296,15 @@ namespace Called_Id
             try
             {
                 Number = Number.Replace(" ", "");
-                if (Number[0] == '+')
+
+                for (int i = 1; i < Number.Length; i++)
                 {
-                    for (int i = 1; i < Number.Length; i++)
+                    if (!char.IsDigit(Number[i]))
                     {
-                        if (!char.IsDigit(Number[i]))
-                        {
-                            return false;
-                        }
+                        return false;
                     }
-                    return true;
                 }
-                return false;
+                return true;
             }
             catch
             {

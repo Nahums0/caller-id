@@ -155,7 +155,7 @@ namespace Called_Id
                 float scale = Context.Resources.DisplayMetrics.Density;
                 int pixels = (int)(137 * scale + 0.5f);
                 tabView.SetWidth(pixels);
-                tabView.Text = ((SamplePagerAdapter)adapter).GetHeaderTitle(i);
+                tabView.Text = ((MainPagerAdapter)adapter).GetHeaderTitle(i);
                 tabView.SetTextColor(Android.Graphics.Color.White);
                 tabView.Tag = i;
                 tabView.TextSize = 15;

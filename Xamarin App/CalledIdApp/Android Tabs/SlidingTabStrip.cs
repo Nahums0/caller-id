@@ -16,7 +16,6 @@ namespace Called_Id
 {
     public class SlidingTabStrip : LinearLayout
     {
-        //Copy and paste from here................................................................
         private const int DEFAULT_BOTTOM_BORDER_THICKNESS_DIPS = 1;
         private const byte DEFAULT_BOTTOM_BORDER_COLOR_ALPHA = 0X26;
         private const int SELECTED_INDICATOR_THICKNESS_DIPS = 4;

@@ -69,10 +69,11 @@ namespace RestAPI
             string numbers = "";
             foreach (var item in Nicknames)
             {
-                numbers += "{\"m_Item1\":\""+item.Item1+ "\",\"m_Item2\":\"" + item.Item2 + "\"},";
+                numbers += "{\"m_Item1\":\"" + item.Item1 + "\",\"m_Item2\":\"" + item.Item2 + "\"},";
             }
-            numbers = numbers.Remove(numbers.Length - 1);
-            string str = "{\"Id\":"+Id+",\"Number\":\""+Number+"\",\"Nicknames\":["+numbers+"]}";
+            if (numbers.Length != 0)
+                numbers = numbers.Remove(numbers.Length - 1);
+            string str = "{\"Id\":" + Id + ",\"Number\":\"" + Number + "\",\"Nicknames\":[" + numbers + "]}";
             return str;
         }
         public override string ToString()

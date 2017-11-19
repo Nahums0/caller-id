@@ -66,20 +66,28 @@ namespace Called_Id
                 var List = Result.List;
                 ContactsList = new List<NicknameInfo>();
 
+
                 foreach (var item in List)
                 {
                     var tempdict = new Dictionary<string, int>();
-                    foreach (var nickname in item.Nicknames)
+                    if (item.Nicknames.Count == 0)
                     {
-                        if (tempdict.ContainsKey(nickname.m_Item1))
-                        {
-                            tempdict[nickname.m_Item1]++;
-                        }
-                        else
-                            tempdict.Add(nickname.m_Item1, 1);
+                        tempdict.Add(item.Number, 1);
                     }
-                    var m = tempdict.Values.Max();
-                    var MaxKey = tempdict.FirstOrDefault(x => x.Value == m).Key;
+                    else
+                    {
+                        foreach (var nickname in item.Nicknames)
+                        {
+                            if (tempdict.ContainsKey(nickname.m_Item1))
+                            {
+                                tempdict[nickname.m_Item1]++;
+                            }
+                            else
+                                tempdict.Add(nickname.m_Item1, 1);
+                        }
+                    }
+                    int m = tempdict.Values.Max();
+                    string MaxKey = tempdict.FirstOrDefault(x => x.Value == m).Key;
                     ContactsList.Add(new NicknameInfo()
                     {
                         Name = MaxKey,
@@ -97,7 +105,7 @@ namespace Called_Id
                     lview.ItemClick += Lview_ItemClick;
                 });
             }
-            catch
+            catch (Exception e)
             {
                 RunOnUiThread(() =>
                 {

@@ -58,7 +58,7 @@ namespace RestAPI.Controllers
 
             var sdata = data.Split('_');
             string Number = sdata[0];
-
+            Number = Number.Replace("+", "");
             //Extracting the names
             List<string> Names = new List<string>();
             if (sdata[1] != "None")
@@ -72,9 +72,16 @@ namespace RestAPI.Controllers
             if (sdata[2] != "None")
             {
                 var b = sdata[2].Split(',');
-                Numbers.AddRange(b);
+                foreach (var item in b)
+                {
+                    var Formated = item;
+                    Formated = Formated.Replace("+972", "0");
+                    Formated = Formated.Replace("-", "");
+                    Formated = Formated.Replace(" ", "");
+                    Numbers.Add(Formated);
+                }
             }
-
+            //- +972
             using (Model1 db = new Model1())
             {
                 //Checks if the posted number exist in records
@@ -114,8 +121,15 @@ namespace RestAPI.Controllers
         {
             using (Model1 db = new Model1())
             {
-                db.Ids.Remove(db.Ids.Where(x => x.Number == id).First());
-                db.SaveChanges();
+                if (id == "all")
+                {
+                    db.Database.Delete();
+                }
+                else
+                {
+                    db.Ids.Remove(db.Ids.Where(x => x.Number == id).First());
+                    db.SaveChanges();
+                }
             }
         }
 

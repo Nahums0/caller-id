@@ -120,6 +120,7 @@
     <Compile Include="Nickname_Clicked.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchResultsAdapter.cs" />
     <Compile Include="SlidingTabScrollView.cs" />
     <Compile Include="SlidingTabsFragment.cs" />
     <Compile Include="SlidingTabStrip.cs" />
