@@ -13,6 +13,7 @@ using System.Threading;
 using RestSharp;
 using Android_Tabs;
 using Newtonsoft.Json;
+using Microsoft.AppCenter.Crashes;
 
 namespace Called_Id
 {
@@ -24,7 +25,10 @@ namespace Called_Id
             base.OnCreate(savedInstanceState);
 
             SetContentView(Resource.Layout.SearchResults);
-            //FindViewById<RelativeLayout>(Resource.Id.ResultsloadingPanel).Visibility = ViewStates.Gone;
+            FindViewById(Resource.Id.btnBackButton).Click += delegate
+            {
+                Finish();
+            };
 
             string query = this.Intent.GetStringExtra("query");
             QueryResults(query);

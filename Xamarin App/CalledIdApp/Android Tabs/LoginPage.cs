@@ -62,6 +62,7 @@ namespace Called_Id
     public static class AppConsts
     {
         public static string RestBaseUrl = "http://77.138.13.115/";
+        public static string AppCenterSecret = "{Secret}";
     }
     public static class RestQueries
     {
@@ -265,10 +266,9 @@ namespace Called_Id
         {
             base.OnCreate(savedInstanceState);
 
-            AppCenter.Start("2ddfe1e1-a960-4aca-a3ea-bd12f75be35d",
+            AppCenter.Start(AppConsts.AppCenterSecret,
                    typeof(Analytics), typeof(Crashes));
-
-            throw new Exception("Test Exception");
+            
             CheckForLoggedUser();
 
             SetContentView(Resource.Layout.login_page);
