@@ -28,7 +28,7 @@ namespace Called_Id
         {
             base.OnCreate(savedInstanceState);
 
-            AppCenter.Start("2ddfe1e1-a960-4aca-a3ea-bd12f75be35d",
+            AppCenter.Start(AppConsts.AppCenterSecret,
                    typeof(Analytics), typeof(Crashes));
 
             SetContentView(Resource.Layout.Main);
