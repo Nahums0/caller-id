@@ -2222,6 +2222,12 @@ namespace Android_Tabs
 			// aapt resource value: 0x7f07008c
 			public const int LoginPageloadingPanel = 2131165324;
 			
+			// aapt resource value: 0x7f0700b4
+			public const int ResultsloadingPanel = 2131165364;
+			
+			// aapt resource value: 0x7f0700b3
+			public const int TVVV = 2131165363;
+			
 			// aapt resource value: 0x7f070099
 			public const int action0 = 2131165337;
 			
@@ -2474,11 +2480,14 @@ namespace Android_Tabs
 			// aapt resource value: 0x7f070095
 			public const int lvNicknameInfoListView = 2131165333;
 			
+			// aapt resource value: 0x7f0700b5
+			public const int lvResulsList = 2131165365;
+			
 			// aapt resource value: 0x7f0700b1
 			public const int lvSearchResults = 2131165361;
 			
-			// aapt resource value: 0x7f0700b4
-			public const int masked = 2131165364;
+			// aapt resource value: 0x7f0700b7
+			public const int masked = 2131165367;
 			
 			// aapt resource value: 0x7f07009c
 			public const int media_actions = 2131165340;
@@ -2750,8 +2759,8 @@ namespace Android_Tabs
 			// aapt resource value: 0x7f070082
 			public const int viewpager = 2131165314;
 			
-			// aapt resource value: 0x7f0700b3
-			public const int visible = 2131165363;
+			// aapt resource value: 0x7f0700b6
+			public const int visible = 2131165366;
 			
 			// aapt resource value: 0x7f070027
 			public const int withText = 2131165223;
@@ -3002,16 +3011,19 @@ namespace Android_Tabs
 			public const int pager_item = 2130903102;
 			
 			// aapt resource value: 0x7f03003f
-			public const int select_dialog_item_material = 2130903103;
+			public const int SearchResults = 2130903103;
 			
 			// aapt resource value: 0x7f030040
-			public const int select_dialog_multichoice_material = 2130903104;
+			public const int select_dialog_item_material = 2130903104;
 			
 			// aapt resource value: 0x7f030041
-			public const int select_dialog_singlechoice_material = 2130903105;
+			public const int select_dialog_multichoice_material = 2130903105;
 			
 			// aapt resource value: 0x7f030042
-			public const int support_simple_spinner_dropdown_item = 2130903106;
+			public const int select_dialog_singlechoice_material = 2130903106;
+			
+			// aapt resource value: 0x7f030043
+			public const int support_simple_spinner_dropdown_item = 2130903107;
 			
 			static Layout()
 			{

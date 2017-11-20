@@ -2,7 +2,7 @@
 using Android.App;
 using Android.OS;
 using Android.Widget;
-using Android_Tabs;
+using Called_Id;
 using Android.Content;
 using System.IO;
 using Android.Preferences;
@@ -14,6 +14,11 @@ using Xamarin.Contacts;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
+using Android_Tabs;
+
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace Called_Id
 {
@@ -260,6 +265,10 @@ namespace Called_Id
         {
             base.OnCreate(savedInstanceState);
 
+            AppCenter.Start("2ddfe1e1-a960-4aca-a3ea-bd12f75be35d",
+                   typeof(Analytics), typeof(Crashes));
+
+            throw new Exception("Test Exception");
             CheckForLoggedUser();
 
             SetContentView(Resource.Layout.login_page);

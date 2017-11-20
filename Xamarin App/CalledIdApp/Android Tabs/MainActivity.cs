@@ -3,9 +3,13 @@ using Android.Widget;
 using Android.OS;
 using Android.Views;
 using System.Collections.Generic;
-using Android_Tabs;
+using Called_Id;
 using System.Threading.Tasks;
 using System.Threading;
+using Android_Tabs;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 
 namespace Called_Id
 {
@@ -23,6 +27,10 @@ namespace Called_Id
         protected async override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
+            AppCenter.Start("2ddfe1e1-a960-4aca-a3ea-bd12f75be35d",
+                   typeof(Analytics), typeof(Crashes));
+
             SetContentView(Resource.Layout.Main);
 
             new Thread(PostUser).Start();

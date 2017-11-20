@@ -12,9 +12,10 @@ using Android.Views;
 using Android.Widget;
 using Android.Support.V4.View;
 using Java.Lang;
-using Android_Tabs;
+using Called_Id;
 using Newtonsoft.Json;
 using RestSharp;
+using Android_Tabs;
 
 namespace Called_Id
 {
@@ -39,7 +40,7 @@ namespace Called_Id
         {
             mSlidingTabScrollView = view.FindViewById<SlidingTabScrollView>(Resource.Id.sliding_tabs);
             mViewPager = view.FindViewById<ViewPager>(Resource.Id.viewpager);
-            mViewPager.Adapter = new MainPagerAdapter(intent);
+            mViewPager.Adapter = new MainPagerAdapter(intent,view);
 
             mSlidingTabScrollView.ViewPager = mViewPager;
         }
@@ -52,14 +53,17 @@ namespace Called_Id
         List<string> Tabs = new List<string>();
         Context context;
         Intent intent;
+        View view;
         JsonClass.RootObject UserDataObject;
         SearchResultsAdapter resultsAdapter;
         private ListView lview;
-        private ListView lvResults;
+        View secondview;
+        //private ListView lvResults;
         private bool FirstOpen = true;
 
-        public MainPagerAdapter(Intent i)
+        public MainPagerAdapter(Intent i,View view)
         {
+            secondview = view;
             intent = i;
             Tabs.Add("Names");
             Tabs.Add("Search");
@@ -81,7 +85,7 @@ namespace Called_Id
         public override Java.Lang.Object InstantiateItem(ViewGroup container, int position)
         {
             context = container.Context;
-            View view = LayoutInflater.From(container.Context).Inflate(Resource.Layout.pager_item, container, false);
+            view = LayoutInflater.From(container.Context).Inflate(Resource.Layout.pager_item, container, false);
             container.AddView(view);
 
             lview = view.FindViewById<ListView>(Resource.Id.listview);
@@ -89,7 +93,8 @@ namespace Called_Id
             var cnumber = view.FindViewById<TextView>(Resource.Id.tvCurrentNumber);
             var swiperefreshview = view.FindViewById<Android.Support.V4.Widget.SwipeRefreshLayout>(Resource.Id.swiperefresh);
             var rlAbout = view.FindViewById<RelativeLayout>(Resource.Id.rlFragAbout);
-            lvResults = view.FindViewById<ListView>(Resource.Id.lvSearchResults);
+
+            view.FindViewById<ListView>(Resource.Id.lvSearchResults).Visibility=ViewStates.Gone;
             
             if (FirstOpen)
             {
@@ -104,7 +109,7 @@ namespace Called_Id
 
             //resultsAdapter = new SearchResultsAdapter((Activity)context,new List<string>() { "a" });
 
-            lvResults.Adapter = resultsAdapter;
+            //lvResults.Adapter = resultsAdapter;
 
             lview.Adapter = adapter;
             lview.ItemClick += Lview_ItemClick;
@@ -123,7 +128,7 @@ namespace Called_Id
             {
                 case 0:
                     ShowKeyboard();
-                    lvResults.Adapter = resultsAdapter;
+                    //lvResults.Adapter = resultsAdapter;
                     lview.Visibility = ViewStates.Visible;
                     swiperefreshview.Visibility = ViewStates.Visible;
                     cnumber.Visibility = ViewStates.Visible;
@@ -144,12 +149,14 @@ namespace Called_Id
                         HideKeyboard();
                     }
                     else
+                    {
                         sview.RequestFocus();
+                    }
                     break;
                 case 2:
 
                     ShowKeyboard();
-                    lvResults.Visibility = ViewStates.Gone;
+                    //lvResults.Visibility = ViewStates.Gone;
                     rlAbout.Visibility = ViewStates.Visible;
                     cnumber.Visibility = ViewStates.Gone;
                     swiperefreshview.Visibility = ViewStates.Gone;
@@ -184,27 +191,18 @@ namespace Called_Id
 
         private void Sview_QueryTextSubmit(object sender, SearchView.QueryTextSubmitEventArgs e)
         {
-            resultsAdapter.Items.Add("c");
-            string query = ((SearchView)sender).Query;
-            HideKeyboard();
-            var client = new RestClient(AppConsts.RestBaseUrl);
-            var request = new RestRequest("/api/Ids/" + query, Method.GET);
-            IRestResponse response = client.Execute(request);
-            var content = response.Content;
-            if (content == "null")
+            new Thread(() =>
             {
-                Toast.MakeText(context, "Non Found", ToastLength.Short).Show();
-                return;
-            }
-            JsonClass.RootObject Result = JsonConvert.DeserializeObject<JsonClass.RootObject>(content);
-            List<string> list = new List<string>();
-            foreach (var nick in Result.Nicknames)
-            {
-                list.Add(nick.m_Item1);
-            }
-            
+                string query = ((SearchView)sender).Query;
+                HideKeyboard();
+
+                Intent i = new Intent(context, typeof(SearchResults));
+                i.PutExtra("query", query);
+                ((Activity)context).StartActivity(i);               
+            }).Start();
+
             //SearchResultsAdapter searchResultsAdapter = new SearchResultsAdapter((Activity)context,list );
-            
+
         }
 
 

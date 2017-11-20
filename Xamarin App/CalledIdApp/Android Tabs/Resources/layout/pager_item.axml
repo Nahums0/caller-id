@@ -47,27 +47,28 @@
         android:layout_width="match_parent"
         android:divider="@android:color/transparent"
         android:dividerHeight="10.0sp" />
-  <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-  <RelativeLayout
-        android:layout_height="250dp"
-        android:layout_width="350dp"
-        android:id="@+id/rlFragAbout"
-        android:gravity="center"
-        android:layout_marginBottom="100dp"
-        android:layout_gravity="center"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/shape">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_height="250dp"
+            android:layout_width="350dp"
+            android:id="@+id/rlFragAbout"
             android:gravity="center"
-            android:textSize="22dp"
-            android:textAlignment="textStart"
-            android:layout_marginTop="10dp"
-            android:layout_centerVertical="true"
-            android:text="A Caller Id app built using Xamarin.Android and Asp.Net for the backend API" />
+            android:layout_marginBottom="100dp"
+            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/shape">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/TVVV"
+                android:gravity="center"
+                android:textSize="22dp"
+                android:textAlignment="textStart"
+                android:layout_marginTop="10dp"
+                android:layout_centerVertical="true"
+                android:text="A True Caller Id app built using Xamarin.Android and Asp.Net for the backend API" />
+        </RelativeLayout>
     </RelativeLayout>
-  </RelativeLayout>
 </LinearLayout>
