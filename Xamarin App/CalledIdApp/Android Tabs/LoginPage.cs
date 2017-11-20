@@ -267,8 +267,6 @@ namespace Called_Id
 
             AppCenter.Start("2ddfe1e1-a960-4aca-a3ea-bd12f75be35d",
                    typeof(Analytics), typeof(Crashes));
-
-            throw new Exception("Test Exception");
             CheckForLoggedUser();
 
             SetContentView(Resource.Layout.login_page);
