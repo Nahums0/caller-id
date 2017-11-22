@@ -48,7 +48,7 @@ namespace Called_Id
                 {
                     this.RunOnUiThread(() =>
                     {
-                        Toast.MakeText(this, "Non Found", ToastLength.Short).Show();
+                        Toast.MakeText(this, "None Found", ToastLength.Short).Show();
                         Finish();
                     });
                     return;

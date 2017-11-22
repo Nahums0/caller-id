@@ -200,9 +200,6 @@ namespace Called_Id
                 i.PutExtra("query", query);
                 ((Activity)context).StartActivity(i);               
             }).Start();
-
-            //SearchResultsAdapter searchResultsAdapter = new SearchResultsAdapter((Activity)context,list );
-
         }
 
 
@@ -211,14 +208,14 @@ namespace Called_Id
             var swiperefresher = (Android.Support.V4.Widget.SwipeRefreshLayout)sender;
             new Thread(() =>
             {
-                //Cancels the update after 7 seconds
+                //Cancels the update after 12 seconds
                 {
                     var timer = new System.Timers.Timer();
                     timer.Interval = 1000;
                     int count = 0;
                     timer.Elapsed += delegate
                     {
-                        if (count++ == 7)
+                        if (count++ == 12)
                         {
                             ((Activity)context).RunOnUiThread(() =>
                             {
@@ -283,11 +280,6 @@ namespace Called_Id
             UserDataObject = JsonConvert.DeserializeObject<JsonClass.RootObject>(UserData);
             var List = new List<Nickname>();
 
-            foreach (var item in UserDataObject.Nicknames)
-            {
-                var c = 5;
-            }
-
             for (int i = 0; i < UserDataObject.Nicknames.Count; i++)
             {
                 int result = NicknamesListContains(List, UserDataObject.Nicknames[i]);
@@ -298,6 +290,9 @@ namespace Called_Id
                 else
                     List.Add(new Nickname { Name = UserDataObject.Nicknames[i].m_Item1, Count = 1 });
             }
+            List<Nickname> SortedList = new List<Nickname>();
+            List.Sort((a, b) => a.Count);
+
             MainActivity.NicknamesList = List;
             NicknamesAdapter adapter = new NicknamesAdapter((Activity)context, MainActivity.NicknamesList);
             return adapter;
