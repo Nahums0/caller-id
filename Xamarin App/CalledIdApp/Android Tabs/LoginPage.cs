@@ -112,7 +112,7 @@ namespace Called_Id
                 {
                     RunOnUiThread(() =>
                     {
-                        Toast.MakeText(this, "Enter A Valid International Number", ToastLength.Short).Show();
+                        Toast.MakeText(this, "Enter A Valid Phone Number", ToastLength.Short).Show();
                         LoadPanel.Visibility = Android.Views.ViewStates.Gone;
                     });
                     return;
@@ -133,7 +133,7 @@ namespace Called_Id
                 var responsedata = RestQueries.Authenticate(Phonenumber);
                 if (responsedata.Logged)
                 {
-                    SaveCurrentUser("0546141122",responsedata.Data);
+                    SaveCurrentUser(Phonenumber,responsedata.Data);
                     ProceedToMainActivity(Phonenumber, responsedata.Data);
                 }
                 else

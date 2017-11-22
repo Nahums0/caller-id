@@ -59,6 +59,10 @@ namespace RestAPI.Controllers
             var sdata = data.Split('_');
             string ClientNumber = sdata[0];
             ClientNumber = ClientNumber.Replace("+972", "0");
+            ClientNumber = ClientNumber.Replace("+1", "");
+            ClientNumber = ClientNumber.Replace("+44", "");
+            ClientNumber = ClientNumber.Replace("(", "");
+            ClientNumber = ClientNumber.Replace(")", "");
             ClientNumber = ClientNumber.Replace("+", "");
 
             //Extracting the names
@@ -78,49 +82,55 @@ namespace RestAPI.Controllers
                 {
                     var Formated = item;
                     Formated = Formated.Replace("+972", "0");
+                    Formated = Formated.Replace("+1", "");
+                    Formated = Formated.Replace("+44", "");
                     Formated = Formated.Replace("-", "");
                     Formated = Formated.Replace(" ", "");
+                    Formated = Formated.Replace("(", "");
+                    Formated = Formated.Replace(")", "");
+                    Formated = Formated.Replace("+", "");
                     Numbers.Add(Formated);
                 }
             }
-            //- +972
             using (Model1 db = new Model1())
             {
                 //Checks if the posted number exist in records
-                var query = db.Ids.Where(x => x.Number == ClientNumber);
-                if (query.Count() == 0) // If it doesn't, it will create and add one
+                var query = db.Ids.SingleOrDefault(x => x.Number == ClientNumber);
+                if (query == null) // If it doesn't, it will create and add one
                 {
                     Person p = new Person { Number = ClientNumber };
                     db.Ids.Add(p);
                 }
-
+                db.SaveChanges();
                 //TODO: OPTIMIZE
                 for (int i = 0; i < Numbers.Count; i++)
                 {
-                    var number = Numbers[i];
-                    var q = db.Ids.SingleOrDefault(x => x.Number == number);
+                    var number_i = Numbers[i];
+                    var item = db.Ids.SingleOrDefault(x => x.Number == number_i);
 
-                    if (q != null)     //The number exists in records
+
+                    if (item != null)     //The number exists in records
                     {
-                                       //The number already exist so we just need to add the nicknames
-                        for (int k = 0; k < q.Nicknames.Count; k++)
+                        for (int k = 0; k < item.Nicknames.Count; k++)
                         {
-                            if (q.Nicknames[k].Item2==ClientNumber)
+                            if (item.Nicknames[k].Item2 == ClientNumber)
                             {
-                                q.Nicknames.RemoveAt(k);
+                                item.Nicknames.RemoveAt(k);
                                 break;
                             }
                         }
-                        q.Nicknames.Add(new Tuple<string, string>(Names[i], ClientNumber));
+                        //The number already exist so we just need to add the nicknames
+                        item.Nicknames.Add(new Tuple<string, string>(Names[i], ClientNumber));
                     }
                     else               //The number does not exists and needs to be created
                     {
                         var TempPerson = new Person();
-                        TempPerson.Number = number;
+                        TempPerson.Number = number_i;
                         TempPerson.Nicknames.Add(new Tuple<string, string>(Names[i], ClientNumber));
                         db.Ids.Add(TempPerson);
                     }
                 }
+               
                 db.SaveChanges();
             }
         }

@@ -70,13 +70,17 @@ namespace Called_Id
 
                 foreach (var item in List)
                 {
-                    var tempdict = new Dictionary<string, int>();
                     if (item.Nicknames.Count == 0)
                     {
-                        tempdict.Add(item.Number, 1);
+                        ContactsList.Add(new NicknameInfo()
+                        {
+                            Name = "Unknown",
+                            Number = item.Number
+                        });
                     }
                     else
                     {
+                        var tempdict = new Dictionary<string, int>();
                         foreach (var nickname in item.Nicknames)
                         {
                             if (tempdict.ContainsKey(nickname.m_Item1))
@@ -86,14 +90,15 @@ namespace Called_Id
                             else
                                 tempdict.Add(nickname.m_Item1, 1);
                         }
+                        int m = tempdict.Values.Max();
+                        string MaxKey = tempdict.FirstOrDefault(x => x.Value == m).Key;
+                        ContactsList.Add(new NicknameInfo()
+                        {
+                            Name = MaxKey,
+                            Number = item.Number
+                        });
                     }
-                    int m = tempdict.Values.Max();
-                    string MaxKey = tempdict.FirstOrDefault(x => x.Value == m).Key;
-                    ContactsList.Add(new NicknameInfo()
-                    {
-                        Name = MaxKey,
-                        Number = item.Number
-                    });
+                    
                 }
                 RunOnUiThread(() =>
                 {

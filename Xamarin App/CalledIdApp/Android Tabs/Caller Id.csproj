@@ -136,6 +136,7 @@
     <Compile Include="CustomAdapter.cs" />
     <Compile Include="LoginPage.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="MainPagerAdapter.cs" />
     <Compile Include="NicknamesInfoAdpater.cs" />
     <Compile Include="Nickname_Clicked.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
