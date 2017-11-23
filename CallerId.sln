@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestAPI", "RestAPI\RestAPI.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestAPI.Tests", "RestAPI.Tests\RestAPI.Tests.csproj", "{F656576D-BF58-45D7-AF50-BA6CA40AC750}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caller Id", "Xamarin App\CalledIdApp\Android Tabs\Caller Id.csproj", "{EBF1A14D-5CEA-4F69-8871-0FCF38E737C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Caller Id", "Xamarin App\CalledIdApp\Caller Id\Caller Id.csproj", "{EBF1A14D-5CEA-4F69-8871-0FCF38E737C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unit Test", "Unit Test\Unit Test.csproj", "{BC26AD8B-B2DD-4EDA-869C-CBAA34C4CE1B}"
 EndProject
