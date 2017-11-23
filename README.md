@@ -1,5 +1,5 @@
 <h1 align="center">Caller Id</h1>
-<p align="center">Caller Id: An app that can show you how you're called other's phones</p>
+<p align="center">Caller Id: An app that can show you your nickname on other's phones</p>
 <img src="https://raw.githubusercontent.com/Hops44/caller-id/master/Screenshot.jpg"/>
 
 ## Main Technologies Used
